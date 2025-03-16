@@ -12,14 +12,14 @@
             <img src="{% static 'images/college-hero.jpg' %}" alt="College Campus" class="w-full h-full object-cover">
         </div>
         <div class="relative z-20 h-full flex items-center justify-center text-center px-4">
-            <div class="max-w-3xl">
-                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">കാബൈക 2025</h1>
-                <p class="text-xl text-white/90 mb-8">Annual Fine Arts Festival - Celebrating Creativity and Culture</p>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <a href="#programs" class="bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition">
+            <div class="max-w-3xl animate-fade-in">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-slide-up">കാബൈക 2025</h1>
+                <p class="text-xl text-white/90 mb-8 animate-slide-up delay-150">Annual Fine Arts Festival - Celebrating Creativity and Culture</p>
+                <div class="flex flex-wrap justify-center gap-4 animate-slide-up delay-300">
+                    <a href="#programs" class="bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition-all hover:scale-105 hover:shadow-lg">
                         View Programs
                     </a>
-                    <a href="#chat" class="bg-white text-purple-600 px-6 py-3 rounded-full hover:bg-gray-100 transition">
+                    <a href="#chat" class="bg-white text-purple-600 px-6 py-3 rounded-full hover:bg-gray-100 transition-all hover:scale-105 hover:shadow-lg">
                         Ask Questions
                     </a>
                 </div>
@@ -30,48 +30,61 @@
     <!-- College Stats -->
     <section class="container mx-auto px-4 mb-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div class="bg-white p-6 rounded-xl shadow-lg text-center">
-                <div class="text-3xl font-bold text-purple-600 mb-2">50+</div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-all hover:shadow-xl">
+                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="50">0</div>
                 <div class="text-gray-600">Events</div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg text-center">
-                <div class="text-3xl font-bold text-purple-600 mb-2">10</div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-all hover:shadow-xl">
+                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="10">0</div>
                 <div class="text-gray-600">Departments</div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg text-center">
-                <div class="text-3xl font-bold text-purple-600 mb-2">1000+</div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-all hover:shadow-xl">
+                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="1000">0</div>
                 <div class="text-gray-600">Participants</div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg text-center">
-                <div class="text-3xl font-bold text-purple-600 mb-2">7</div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-all hover:shadow-xl">
+                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="7">0</div>
                 <div class="text-gray-600">Days</div>
             </div>
         </div>
     </section>
 
-    <!-- Program Overview with Graph -->
+    <!-- Program Overview with Graphs -->
     <section id="programs" class="container mx-auto px-4 mb-12">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Program Overview</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Program Categories -->
-                <div>
-                    <div class="space-y-4">
-                        {% for category in categories %}
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h3 class="font-semibold text-lg text-gray-800 mb-2">{{ category.name }}</h3>
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-600">{{ category.event_count }} events</span>
-                                <span class="text-purple-600">{{ category.max_points }} points</span>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <!-- Points Distribution Graph -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Points Distribution -->
+            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-[1.02] transition-all">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Points Distribution</h2>
                 <div class="bg-gray-50 p-4 rounded-lg">
                     <canvas id="pointsDistribution"></canvas>
                 </div>
+            </div>
+
+            <!-- Participation Stats -->
+            <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-[1.02] transition-all">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Participation by Department</h2>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <canvas id="participationPie"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Program Categories -->
+        <div class="mt-6 bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Event Categories</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for category in categories %}
+                <div class="bg-gray-50 p-4 rounded-lg transform hover:scale-105 transition-all hover:shadow-md">
+                    <h3 class="font-semibold text-lg text-gray-800 mb-2">{{ category.name }}</h3>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">{{ category.event_count }} events</span>
+                        <span class="text-purple-600">{{ category.max_points }} points</span>
+                    </div>
+                    <div class="mt-2 bg-gray-200 rounded-full h-2">
+                        <div class="bg-purple-600 h-2 rounded-full" style="width: {{ category.progress }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -81,39 +94,69 @@
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Gallery</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             {% for image in images %}
-            <div class="relative rounded-lg overflow-hidden aspect-square">
+            <div class="relative rounded-lg overflow-hidden aspect-square group">
                 <img 
                     src="{{ image.image.url }}"
                     alt="{{ image.title }}"
-                    class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 >
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 class="text-white font-semibold">{{ image.title }}</h3>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
     </section>
 
-    <!-- Chatbot Section -->
+    <!-- Enhanced Chatbot Section -->
     <section id="chat" class="container mx-auto px-4 mb-12">
         <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Ask Me Anything</h2>
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-robot text-2xl text-purple-600"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Arts Festival Assistant</h2>
+                    <p class="text-gray-600">Ask me anything about the festival</p>
+                </div>
+            </div>
             <div class="bg-gray-50 rounded-lg p-4 h-[400px] flex flex-col">
-                <div id="chat-messages" class="flex-1 overflow-y-auto mb-4 space-y-4">
+                <div id="chat-messages" class="flex-1 overflow-y-auto mb-4 space-y-4 scroll-smooth">
                     <!-- Messages will be inserted here -->
                 </div>
-                <div class="flex gap-2">
-                    <input 
-                        type="text" 
-                        id="chat-input"
-                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500"
-                        placeholder="Ask about programs, schedule, rules..."
-                    >
+                <div class="flex gap-2 items-center bg-white p-2 rounded-lg shadow-sm">
+                    <div class="flex-1 relative">
+                        <input 
+                            type="text" 
+                            id="chat-input"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                            placeholder="Ask about programs, schedule, rules..."
+                        >
+                        <button id="voice-input" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-600 transition-colors">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
                     <button 
                         id="send-message"
-                        class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
+                        class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-all hover:shadow-lg flex items-center gap-2"
                     >
-                        Send
+                        <span>Send</span>
+                        <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
+            </div>
+            <div class="mt-4 flex gap-2 flex-wrap">
+                <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors">
+                    What events are today?
+                </button>
+                <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors">
+                    How do I register?
+                </button>
+                <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors">
+                    Show points table
+                </button>
             </div>
         </div>
     </section>
@@ -123,7 +166,49 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Initialize Points Distribution Chart
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fade-in');
+                entry.target.style.opacity = 1;
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section').forEach(section => {
+        section.style.opacity = 0;
+        observer.observe(section);
+    });
+
+    // Counter Animation
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const duration = 2000; // 2 seconds
+        const step = target / (duration / 16); // 60fps
+        let current = 0;
+
+        const updateCounter = () => {
+            current += step;
+            if (current < target) {
+                counter.textContent = Math.round(current);
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target;
+            }
+        };
+
+        const counterObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                updateCounter();
+            }
+        });
+
+        counterObserver.observe(counter);
+    });
+
+    // Points Distribution Chart
     const ctx = document.getElementById('pointsDistribution').getContext('2d');
     new Chart(ctx, {
         type: 'bar',
@@ -152,43 +237,112 @@
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    display: false
-                },
+                legend: { display: false },
                 title: {
                     display: true,
-                    text: 'Points Distribution by Category'
+                    text: 'Points Distribution by Category',
+                    color: '#1F2937'
                 }
             },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
                 }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutQuart'
             }
         }
     });
 
-    // Chatbot functionality
+    // Participation Pie Chart
+    const pieCtx = document.getElementById('participationPie').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['CS', 'EC', 'EEE', 'ME', 'CE'],
+            datasets: [{
+                data: [300, 250, 200, 180, 170],
+                backgroundColor: [
+                    'rgba(147, 51, 234, 0.7)',
+                    'rgba(79, 70, 229, 0.7)',
+                    'rgba(59, 130, 246, 0.7)',
+                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(245, 158, 11, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(147, 51, 234, 1)',
+                    'rgba(79, 70, 229, 1)',
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(245, 158, 11, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Participation Distribution',
+                    color: '#1F2937'
+                }
+            },
+            animation: {
+                animateRotate: true,
+                animateScale: true
+            }
+        }
+    });
+
+    // Enhanced Chatbot functionality
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
     const sendButton = document.getElementById('send-message');
+    const voiceButton = document.getElementById('voice-input');
+    const quickQuestions = document.querySelectorAll('.quick-question');
 
     function addMessage(message, isUser = false) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+        messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} opacity-0 transform translate-y-4`;
         
         messageDiv.innerHTML = `
-            <div class="max-w-[75%] ${isUser ? 'bg-purple-600 text-white' : 'bg-white'} rounded-lg px-4 py-2 shadow">
-                ${message}
+            <div class="max-w-[75%] ${isUser ? 'bg-purple-600 text-white' : 'bg-white'} rounded-lg px-4 py-3 shadow-md">
+                ${!isUser ? '<div class="flex items-center gap-2 mb-1"><i class="fas fa-robot text-purple-600"></i><span class="text-xs text-gray-500">Arts Festival Bot</span></div>' : ''}
+                <div class="${isUser ? '' : 'text-gray-800'}">${message}</div>
             </div>
         `;
         
         chatMessages.appendChild(messageDiv);
+        
+        // Animate the message
+        setTimeout(() => {
+            messageDiv.classList.remove('opacity-0', 'translate-y-4');
+            messageDiv.classList.add('transition-all', 'duration-300', 'opacity-100', 'translate-y-0');
+        }, 100);
+
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Add welcome message
-    addMessage("Hello! I'm your Arts Festival assistant. How can I help you today?");
+    // Add welcome message with typing animation
+    let welcomeMessage = "Hello! I'm your Arts Festival assistant. How can I help you today? 👋";
+    addMessage(welcomeMessage);
 
     function handleSendMessage() {
         const message = chatInput.value.trim();
@@ -196,12 +350,42 @@
             addMessage(message, true);
             chatInput.value = '';
             
-            // Simulate response (replace with actual backend integration)
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'flex justify-start mb-4';
+            typingDiv.innerHTML = `
+                <div class="bg-white rounded-lg px-4 py-2 shadow flex items-center gap-2">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            
+            // Simulate response
             setTimeout(() => {
+                chatMessages.removeChild(typingDiv);
                 addMessage("I'm processing your question. Our team will implement the backend integration soon!");
-            }, 1000);
+            }, 1500);
         }
     }
+
+    // Voice input simulation
+    voiceButton.addEventListener('click', () => {
+        voiceButton.classList.add('text-purple-600');
+        setTimeout(() => {
+            voiceButton.classList.remove('text-purple-600');
+            chatInput.value = "Voice input coming soon!";
+        }, 1000);
+    });
+
+    // Quick questions
+    quickQuestions.forEach(button => {
+        button.addEventListener('click', () => {
+            chatInput.value = button.textContent.trim();
+            handleSendMessage();
+        });
+    });
 
     sendButton.addEventListener('click', handleSendMessage);
     chatInput.addEventListener('keypress', (e) => {
@@ -209,5 +393,50 @@
             handleSendMessage();
         }
     });
+
+    // Add some CSS for typing animation
+    const style = document.createElement('style');
+    style.textContent = `
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #9333ea;
+            border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.3s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-out forwards;
+        }
+        
+        .delay-150 {
+            animation-delay: 150ms;
+        }
+        
+        .delay-300 {
+            animation-delay: 300ms;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
 {% endblock %}
