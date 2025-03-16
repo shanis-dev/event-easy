@@ -1,50 +1,213 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="min-h-screen p-4 sm:p-6 lg:p-8">
-    <div class="w-full max-w-full mx-auto">
-        <!-- Main image container -->
-        {% for image in images %}
-        <div class="relative rounded-lg overflow-hidden shadow-xl mb-8 sm:mb-12">
-            <img 
-                src="{{ image.image.url }}"
-                alt="{{ image.title }}"
-                class="w-full h-[200px] sm:h-[300px] lg:h-[400px] object-cover object-center"
-            >
+<div class="min-h-screen">
+    <!-- Hero Section with College Details -->
+    <section class="relative h-[500px] mb-12">
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-900/90 to-indigo-900/90 z-10"></div>
+        <div class="absolute inset-0">
+            <img src="{% static 'images/college-hero.jpg' %}" alt="College Campus" class="w-full h-full object-cover">
         </div>
-        {% endfor %}
-
-        <!-- Quick links -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            <!-- Events Card -->
-            <a href="{% url 'schedule' %}"
-                class="bg-white p-6 sm:p-8 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition duration-300 ease-in-out">
-                <div class="space-y-4">
-                    <h2 class="text-xl sm:text-2xl font-semibold text-purple-600">Events</h2>
-                    <p class="text-gray-600 text-sm sm:text-base">Check out all the exciting events and competitions.</p>
+        <div class="relative z-20 h-full flex items-center justify-center text-center px-4">
+            <div class="max-w-3xl">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">കാബൈക 2025</h1>
+                <p class="text-xl text-white/90 mb-8">Annual Fine Arts Festival - Celebrating Creativity and Culture</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#programs" class="bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition">
+                        View Programs
+                    </a>
+                    <a href="#chat" class="bg-white text-purple-600 px-6 py-3 rounded-full hover:bg-gray-100 transition">
+                        Ask Questions
+                    </a>
                 </div>
-            </a>
-
-            <!-- Points Table Card -->
-            <a href="{% url 'points_table' %}"
-                class="bg-white p-6 sm:p-8 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition duration-300 ease-in-out">
-                <div class="space-y-4">
-                    <h2 class="text-xl sm:text-2xl font-semibold text-purple-600">Points Table</h2>
-                    <p class="text-gray-600 text-sm sm:text-base">See who's leading in the department rankings.</p>
-                </div>
-            </a>
-
-            <!-- Results Card -->
-            <a href="{% url 'results' %}"
-                class="bg-white p-6 sm:p-8 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition duration-300 ease-in-out">
-                <div class="space-y-4">
-                    <h2 class="text-xl sm:text-2xl font-semibold text-purple-600">Results</h2>
-                    <p class="text-gray-600 text-sm sm:text-base">View the latest competition results.</p>
-                </div>
-            </a>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- College Stats -->
+    <section class="container mx-auto px-4 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2">50+</div>
+                <div class="text-gray-600">Events</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2">10</div>
+                <div class="text-gray-600">Departments</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2">1000+</div>
+                <div class="text-gray-600">Participants</div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg text-center">
+                <div class="text-3xl font-bold text-purple-600 mb-2">7</div>
+                <div class="text-gray-600">Days</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Overview with Graph -->
+    <section id="programs" class="container mx-auto px-4 mb-12">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Program Overview</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Program Categories -->
+                <div>
+                    <div class="space-y-4">
+                        {% for category in categories %}
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-semibold text-lg text-gray-800 mb-2">{{ category.name }}</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">{{ category.event_count }} events</span>
+                                <span class="text-purple-600">{{ category.max_points }} points</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- Points Distribution Graph -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <canvas id="pointsDistribution"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="container mx-auto px-4 mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Gallery</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for image in images %}
+            <div class="relative rounded-lg overflow-hidden aspect-square">
+                <img 
+                    src="{{ image.image.url }}"
+                    alt="{{ image.title }}"
+                    class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                >
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Chatbot Section -->
+    <section id="chat" class="container mx-auto px-4 mb-12">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Ask Me Anything</h2>
+            <div class="bg-gray-50 rounded-lg p-4 h-[400px] flex flex-col">
+                <div id="chat-messages" class="flex-1 overflow-y-auto mb-4 space-y-4">
+                    <!-- Messages will be inserted here -->
+                </div>
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        id="chat-input"
+                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500"
+                        placeholder="Ask about programs, schedule, rules..."
+                    >
+                    <button 
+                        id="send-message"
+                        class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
+                    >
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+<!-- Chart.js for graphs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Initialize Points Distribution Chart
+    const ctx = document.getElementById('pointsDistribution').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Dance', 'Music', 'Literary', 'Theatre', 'Fine Arts'],
+            datasets: [{
+                label: 'Maximum Points',
+                data: [50, 45, 40, 35, 30],
+                backgroundColor: [
+                    'rgba(147, 51, 234, 0.7)',
+                    'rgba(79, 70, 229, 0.7)',
+                    'rgba(59, 130, 246, 0.7)',
+                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(245, 158, 11, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(147, 51, 234, 1)',
+                    'rgba(79, 70, 229, 1)',
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(245, 158, 11, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Points Distribution by Category'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Chatbot functionality
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-message');
+
+    function addMessage(message, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+        
+        messageDiv.innerHTML = `
+            <div class="max-w-[75%] ${isUser ? 'bg-purple-600 text-white' : 'bg-white'} rounded-lg px-4 py-2 shadow">
+                ${message}
+            </div>
+        `;
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Add welcome message
+    addMessage("Hello! I'm your Arts Festival assistant. How can I help you today?");
+
+    function handleSendMessage() {
+        const message = chatInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            chatInput.value = '';
+            
+            // Simulate response (replace with actual backend integration)
+            setTimeout(() => {
+                addMessage("I'm processing your question. Our team will implement the backend integration soon!");
+            }, 1000);
+        }
+    }
+
+    sendButton.addEventListener('click', handleSendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSendMessage();
+        }
+    });
+</script>
 {% endblock %}
