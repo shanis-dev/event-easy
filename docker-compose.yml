@@ -17,10 +17,11 @@ services:
     environment:
       - DEBUG=1
       - DJANGO_SETTINGS_MODULE=kabyka_psmo.settings
-      - DB_HOST=db
-      - DB_NAME=kabyka_psmo
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      - DB_HOST=ep-tight-pond-a5t7vwal-pooler.us-east-2.aws.neon.tech
+      - DB_NAME=kabyka_db
+      - DB_USER=kabyka_db_owner
+      - DB_PASSWORD=npg_8UovB9TdxwNC
+      - DB_PORT=5432
     depends_on:
       - db
 
@@ -29,9 +30,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=kabyka_psmo
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=kabyka_db
+      - POSTGRES_USER=kabyka_db_owner
+      - POSTGRES_PASSWORD=npg_8UovB9TdxwNC
     ports:
       - "5432:5432"
 
