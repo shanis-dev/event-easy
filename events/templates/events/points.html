@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Points Table - College Arts Festival{% endblock %}
+
+{% block content %}
+<div class="space-y-8 p-4">
+    <!-- Header Section -->
+    <div class="text-center mb-10 animate-slideUp">
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 text-transparent bg-clip-text">Leaderboard</h1>
+        <p class="text-gray-600 mt-2">Track department and individual achievements</p>
+    </div>
+
+    <!-- Department Points Card -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 animate-slideUp">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+            <h2 class="text-3xl font-bold text-gray-800">Department Rankings</h2>
+            <div class="bg-purple-100 rounded-full px-4 py-2">
+                <span class="text-purple-600 font-semibold">Total Departments: {{ departments|length }}</span>
+            </div>
+        </div>
+    
+        <div class="overflow-x-auto -mx-6">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-purple-50">
+                    <tr>
+                        <th class="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-purple-600">Rank</th>
+                        <th class="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-purple-600">Department</th>
+                        <th class="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-purple-600">Points</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for department in departments %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 sm:px-6 py-4">
+                            <div class="flex items-center space-x-2">
+                                {% if forloop.counter <= 3 %}
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center relative 
+                                        {% if forloop.counter == 1 %}
+                                            bg-gradient-to-br from-yellow-100 to-yellow-200 shadow-yellow-100
+                                        {% elif forloop.counter == 2 %}
+                                            bg-gradient-to-br from-gray-100 to-gray-200 shadow-gray-100
+                                        {% else %}
+                                            bg-gradient-to-br from-orange-100 to-orange-200 shadow-orange-100
+                                        {% endif %}
+                                        shadow-lg">
+                                        <span class="text-base sm:text-lg font-bold 
+                                            {% if forloop.counter == 1 %}
+                                                text-yellow-800
+                                            {% elif forloop.counter == 2 %}
+                                                text-gray-800
+                                            {% else %}
+                                                text-orange-800
+                                            {% endif %}">
+                                            {% if forloop.counter == 1 %}🏆{% endif %}
+                                            {% if forloop.counter == 2 %}🥈{% endif %}
+                                            {% if forloop.counter == 3 %}🥉{% endif %}
+                                        </span>
+                                    </div>
+                                {% else %}
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-purple-50 text-purple-600 font-bold text-base sm:text-lg">
+                                        {{ forloop.counter }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-4 sm:px-6 py-4">
+                            <div class="flex flex-col">
+                                <span class="font-semibold text-gray-900">{{ department.name }}</span>
+                                {% if forloop.counter == 1 %}
+                                    <span class="text-xs text-green-600 font-medium mt-1">Leading</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-4 sm:px-6 py-4">
+                            <span class="text-lg font-bold text-purple-600">{{ department.total_points }}</span>
+                            <span class="text-sm text-purple-400">pts</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Performers Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        {% for category, students in top_students_by_category.items %}
+        <div class="bg-white rounded-2xl shadow-lg p-6 animate-slideUp">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">{{ category.name }}</h3>
+            <div class="space-y-4">
+                {% for student_data in students %}
+                <div class="relative">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm font-medium text-gray-700">{{ student_data.student.name }}</span>
+                        <span class="text-sm font-semibold text-purple-600">{{ student_data.points_in_category }} pts</span>
+                    </div>
+                    <div class="text-sm text-gray-600 italic pl-2">
+                        {{ student_data.student.department.name }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation classes to elements as they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        });
+
+        // Observe all major sections
+        document.querySelectorAll('.bg-white').forEach((el) => {
+            el.classList.add('opacity-0', 'translate-y-4', 'transition-all', 'duration-500');
+            observer.observe(el);
+        });
+    });
+</script>
+{% endblock %}
+

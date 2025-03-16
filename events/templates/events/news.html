@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}News & Updates - കാബൈക 2025{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8">News & Updates</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in news %}
+            <div class="bg-gray-50 rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="aspect-w-16 aspect-h-9">
+                    <img 
+                        src="{{ item.image.url }}" 
+                        alt="{{ item.title }}" 
+                        class="w-full h-full object-cover"
+                    >
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ item.title }}</h3>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-500 text-lg">No updates available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

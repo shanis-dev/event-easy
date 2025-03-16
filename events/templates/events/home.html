@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="min-h-screen p-4 sm:p-6 lg:p-8">
+    <div class="w-full max-w-full mx-auto">
+        <!-- Main image container -->
+        {% for image in images %}
+        <div class="relative rounded-lg overflow-hidden shadow-xl mb-8 sm:mb-12">
+            <img 
+                src="{{ image.image.url }}"
+                alt="{{ image.title }}"
+                class="w-full h-[200px] sm:h-[300px] lg:h-[400px] object-cover object-center"
+            >
+        </div>
+        {% endfor %}
+
+        <!-- Quick links -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <!-- Events Card -->
+            <a href="{% url 'schedule' %}"
+                class="bg-white p-6 sm:p-8 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition duration-300 ease-in-out">
+                <div class="space-y-4">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-purple-600">Events</h2>
+                    <p class="text-gray-600 text-sm sm:text-base">Check out all the exciting events and competitions.</p>
+                </div>
+            </a>
+
+            <!-- Points Table Card -->
+            <a href="{% url 'points_table' %}"
+                class="bg-white p-6 sm:p-8 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition duration-300 ease-in-out">
+                <div class="space-y-4">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-purple-600">Points Table</h2>
+                    <p class="text-gray-600 text-sm sm:text-base">See who's leading in the department rankings.</p>
+                </div>
+            </a>
+
+            <!-- Results Card -->
+            <a href="{% url 'results' %}"
+                class="bg-white p-6 sm:p-8 rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition duration-300 ease-in-out">
+                <div class="space-y-4">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-purple-600">Results</h2>
+                    <p class="text-gray-600 text-sm sm:text-base">View the latest competition results.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

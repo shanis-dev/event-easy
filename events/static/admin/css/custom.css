@@ -1,0 +1,156 @@
+/* Custom Admin Styles */
+:root {
+    --primary-color: #9333ea;
+    --primary-hover: #7e22ce;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+}
+
+/* Header Styling */
+#header {
+    background: var(--primary-color);
+    color: white;
+}
+
+#branding h1 {
+    font-weight: bold;
+}
+
+.module h2, .module caption {
+    background: var(--primary-color);
+}
+
+/* Links and Buttons */
+a:link, a:visited {
+    color: var(--primary-color);
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: var(--primary-color);
+    color: white;
+}
+
+.button:hover, input[type=submit]:hover, input[type=button]:hover {
+    background: var(--primary-hover);
+}
+
+/* List View Enhancements */
+#changelist-filter h2 {
+    background: var(--primary-color);
+}
+
+.text-gold {
+    color: var(--gold);
+    font-weight: bold;
+}
+
+.text-silver {
+    color: var(--silver);
+    font-weight: bold;
+}
+
+.text-bronze {
+    color: var(--bronze);
+    font-weight: bold;
+}
+
+/* Dashboard Widgets */
+.dashboard .module table th {
+    background: var(--primary-color);
+}
+
+.dashboard .module table tr:hover {
+    background: #f5f5f5;
+}
+
+/* Quick Links Section */
+.quick-links {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.quick-links h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+/* Status Icons */
+.text-green-600 {
+    color: #059669;
+}
+
+.text-red-600 {
+    color: #dc2626;
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+    #header {
+        padding: 10px 20px;
+    }
+    
+    #content {
+        padding: 15px;
+    }
+    
+    .quick-links {
+        margin: 10px;
+    }
+}
+
+/* Form Improvements */
+.form-row {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-row:hover {
+    background-color: #f8f9fa;
+}
+
+.help {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+/* Table Enhancements */
+#result_list thead th {
+    background: var(--primary-color);
+    color: white;
+}
+
+#result_list tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Image Preview Enhancements */
+.field-display_image img,
+.field-display_poster img {
+    transition: transform 0.2s;
+}
+
+.field-display_image img:hover,
+.field-display_poster img:hover {
+    transform: scale(1.1);
+}
+
+/* Message Styling */
+.success {
+    background: #10B981;
+}
+
+.warning {
+    background: #F59E0B;
+}
+
+.error {
+    background: #EF4444;
+} 
