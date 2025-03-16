@@ -6,6 +6,7 @@ from django.http import JsonResponse
 import openai
 from django.conf import settings
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
     images = Image.objects.all()
@@ -120,7 +121,8 @@ def points_table(request):
         'top_students_by_category': top_students_by_category
     })
 
-def chat_with_gpt(request):
+@csrf_exempt
+def chat_view(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -137,7 +139,7 @@ def chat_with_gpt(request):
             context += "\nRecent results: " + ", ".join([f"{r.program}" for r in results[:5]])
             
             # Create system message with context
-            system_message = f"""You are a helpful assistant for the College Arts Festival. 
+            system_message = f"""You are a helpful assistant for the Kabyka 2025 Arts Festival. 
             Here's the current context:
             {context}
             
@@ -145,28 +147,26 @@ def chat_with_gpt(request):
             
             # Call OpenAI API
             openai.api_key = settings.OPENAI_API_KEY
-            response = openai.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": system_message},
                     {"role": "user", "content": user_message}
-                ],
-                max_tokens=150,
-                temperature=0.7
+                ]
             )
             
             # Extract the response
-            bot_response = response.choices[0].message.content
+            ai_response = response.choices[0].message['content']
             
             return JsonResponse({
-                'response': bot_response,
-                'status': 'success'
+                'status': 'success',
+                'response': ai_response
             })
             
         except Exception as e:
             return JsonResponse({
-                'error': str(e),
-                'status': 'error'
+                'status': 'error',
+                'error': str(e)
             }, status=500)
     
-    return JsonResponse({'error': 'Only POST method is allowed', 'status': 'error'}, status=405)
+    return JsonResponse({'status': 'error', 'error': 'Only POST method is allowed'}, status=405)

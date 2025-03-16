@@ -388,11 +388,32 @@
             `;
             chatMessages.appendChild(typingDiv);
             
-            // Simulate response
-            setTimeout(() => {
+            // Send to backend
+            fetch('/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
                 chatMessages.removeChild(typingDiv);
-                addMessage("I'm processing your question. Our team will implement the backend integration soon!");
-            }, 1500);
+                
+                if (data.status === 'success') {
+                    addMessage(data.response);
+                } else {
+                    addMessage('Sorry, I encountered an error: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                // Remove typing indicator
+                chatMessages.removeChild(typingDiv);
+                console.error('Error:', error);
+                addMessage('Sorry, I encountered an error while processing your request. Please try again.');
+            });
         }
     }
 
