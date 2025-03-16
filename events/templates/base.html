@@ -44,33 +44,6 @@
             transition: all 0.3s ease;
         }
         
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .nav-item {
             position: relative;
         }
@@ -97,11 +70,6 @@
     </style>
 </head>
 <body class="theme-transition bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white pb-16">
-    <!-- Loading overlay -->
-    <div id="loading" class="loading hidden">
-        <div class="loading-spinner"></div>
-    </div>
-
     <!-- Top Header -->
     <header class="bg-white dark:bg-gray-800 shadow-sm fixed w-full z-10 theme-transition">
         <div class="max-w-6xl mx-auto px-4">
@@ -174,20 +142,6 @@
                 if (link.getAttribute('href') === path) {
                     link.classList.remove('text-gray-600', 'dark:text-gray-400');
                     link.classList.add('text-purple-600', 'dark:text-purple-400', 'active');
-                }
-            });
-
-            // Loading state handler
-            window.addEventListener('load', () => {
-                const loading = document.getElementById('loading');
-                loading.classList.add('hidden');
-            });
-
-            document.addEventListener('click', (e) => {
-                const link = e.target.closest('a');
-                if (link && !e.ctrlKey && !e.shiftKey && !e.metaKey && !e.altKey) {
-                    const loading = document.getElementById('loading');
-                    loading.classList.remove('hidden');
                 }
             });
         </script>

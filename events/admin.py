@@ -3,6 +3,7 @@ from django.utils.html import format_html
 from django.db.models import Count, Sum
 from django.core.cache import cache
 from django.utils import timezone
+from django.template.response import TemplateResponse
 from .models import Department, Posters, Student, Category, Result, Schedule, Image
 
 class CustomAdminSite(admin.AdminSite):
@@ -10,6 +11,18 @@ class CustomAdminSite(admin.AdminSite):
     site_title = 'KABYKA PSMO Admin'
     index_title = 'Fine Arts Festival Management'
     
+    def index(self, request, extra_context=None):
+        # Get statistics
+        context = {
+            'students_count': Student.objects.count(),
+            'events_count': Schedule.objects.count(),
+            'results_count': Result.objects.count(),
+            'departments_count': Department.objects.count(),
+        }
+        if extra_context:
+            context.update(extra_context)
+        return super().index(request, context)
+
     def get_app_list(self, request):
         app_list = super().get_app_list(request)
         app_list.append({

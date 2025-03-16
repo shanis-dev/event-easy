@@ -1,0 +1,98 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/custom.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+        <div class="stat-card">
+            <i class="fas fa-users fa-2x" style="color: var(--primary-color)"></i>
+            <div class="number">{{ students_count }}</div>
+            <div class="label">Total Students</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-trophy fa-2x" style="color: var(--success-color)"></i>
+            <div class="number">{{ events_count }}</div>
+            <div class="label">Total Events</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-medal fa-2x" style="color: var(--warning-color)"></i>
+            <div class="number">{{ results_count }}</div>
+            <div class="label">Results Published</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-building fa-2x" style="color: var(--secondary-color)"></i>
+            <div class="number">{{ departments_count }}</div>
+            <div class="label">Departments</div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+        <!-- Available Apps -->
+        <div class="module">
+            <h2>{% trans 'Available Modules' %}</h2>
+            <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; padding: 15px;">
+                {% for app in app_list %}
+                    {% for model in app.models %}
+                        {% if model.admin_url %}
+                        <div class="app-item" style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <h3 style="margin: 0 0 10px 0;">
+                                <a href="{{ model.admin_url }}" style="color: var(--primary-color); text-decoration: none;">
+                                    {{ model.name }}
+                                </a>
+                            </h3>
+                            {% if model.add_url %}
+                                <a href="{{ model.add_url }}" class="button" style="font-size: 0.8em;">
+                                    <i class="fas fa-plus"></i> Add
+                                </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Recent Actions -->
+        <div class="recent-actions">
+            <h2>
+                <i class="fas fa-history"></i>
+                {% trans 'Recent Actions' %}
+            </h2>
+            {% load log %}
+            {% get_admin_log 10 as admin_log %}
+            {% if not admin_log %}
+                <p>{% trans 'None available' %}</p>
+            {% else %}
+                <ul class="actionlist" style="list-style: none; padding: 0;">
+                    {% for entry in admin_log %}
+                        <li style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                            {% if entry.is_addition %}
+                                <i class="fas fa-plus-circle" style="color: var(--success-color)"></i>
+                            {% elif entry.is_change %}
+                                <i class="fas fa-edit" style="color: var(--warning-color)"></i>
+                            {% elif entry.is_deletion %}
+                                <i class="fas fa-trash" style="color: var(--danger-color)"></i>
+                            {% endif %}
+                            {% if entry.is_deletion or not entry.get_admin_url %}
+                                {{ entry.object_repr }}
+                            {% else %}
+                                <a href="{{ entry.get_admin_url }}" style="color: var(--primary-color); text-decoration: none;">
+                                    {{ entry.object_repr }}
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 
