@@ -150,7 +150,7 @@
                 <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors">
                     How do I register?
                 </button>
-                <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors" onclick="window.location.href='{% url 'points' %}'">
+                <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors" onclick="window.location.href='{% url 'points' %}';">
                     Show points table
                 </button>
             </div>
@@ -241,16 +241,13 @@
 
     // Points Distribution Chart
     const ctx = document.getElementById('pointsDistribution').getContext('2d');
-    const departmentNames = {{ department_names|safe }};
-    const departmentPoints = {{ department_points|safe }};
-    
-    new Chart(ctx, {
+    const chartConfig = {
         type: 'bar',
         data: {
-            labels: departmentNames,
+            labels: JSON.parse('{{ department_names|escapejs }}'),
             datasets: [{
                 label: 'Points',
-                data: departmentPoints,
+                data: JSON.parse('{{ department_points|escapejs }}'),
                 backgroundColor: [
                     'rgba(147, 51, 234, 0.7)',
                     'rgba(79, 70, 229, 0.7)',
@@ -305,46 +302,17 @@
                 easing: 'easeInOutQuart'
             }
         }
-    });
+    };
+
+    new Chart(ctx, chartConfig);
 
     // Participation Pie Chart
     const pieCtx = document.getElementById('participationPie').getContext('2d');
-    new Chart(pieCtx, {
+    const pieConfig = {
+        ...chartConfig,
         type: 'doughnut',
-        data: {
-            labels: departmentNames,
-            datasets: [{
-                data: departmentPoints,
-                backgroundColor: [
-                    'rgba(147, 51, 234, 0.7)',
-                    'rgba(79, 70, 229, 0.7)',
-                    'rgba(59, 130, 246, 0.7)',
-                    'rgba(16, 185, 129, 0.7)',
-                    'rgba(245, 158, 11, 0.7)',
-                    'rgba(236, 72, 153, 0.7)',
-                    'rgba(248, 113, 113, 0.7)',
-                    'rgba(129, 140, 248, 0.7)',
-                    'rgba(52, 211, 153, 0.7)',
-                    'rgba(251, 191, 36, 0.7)'
-                ],
-                borderColor: [
-                    'rgba(147, 51, 234, 1)',
-                    'rgba(79, 70, 229, 1)',
-                    'rgba(59, 130, 246, 1)',
-                    'rgba(16, 185, 129, 1)',
-                    'rgba(245, 158, 11, 1)',
-                    'rgba(236, 72, 153, 1)',
-                    'rgba(248, 113, 113, 1)',
-                    'rgba(129, 140, 248, 1)',
-                    'rgba(52, 211, 153, 1)',
-                    'rgba(251, 191, 36, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            ...chartConfig.options,
             plugins: {
                 legend: {
                     position: 'right',
@@ -365,7 +333,9 @@
                 animateScale: true
             }
         }
-    });
+    };
+
+    new Chart(pieCtx, pieConfig);
 
     // Enhanced Chatbot functionality
     const chatMessages = document.getElementById('chat-messages');

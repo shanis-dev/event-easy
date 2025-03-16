@@ -12,8 +12,10 @@ def home(request):
     
     # Get departments data for graphs
     departments = Department.objects.all().order_by('-total_points')  # Order by points
-    department_names = json.dumps([dept.name for dept in departments])
-    department_points = json.dumps([dept.total_points for dept in departments])
+    department_data = {
+        'names': json.dumps([dept.name for dept in departments]),
+        'points': json.dumps([dept.total_points for dept in departments])
+    }
     
     # Get categories with their event counts and points
     categories = Category.objects.all()
@@ -48,8 +50,8 @@ def home(request):
     context = {
         'images': images,
         'categories': category_data,
-        'department_names': department_names,
-        'department_points': department_points,
+        'department_names': department_data['names'],
+        'department_points': department_data['points'],
         'stats': {
             'events': event_count,
             'departments': department_count,
