@@ -11,26 +11,27 @@ def home(request):
     images = Image.objects.all()
     
     # Get departments data for graphs
-    departments = Department.objects.all()
-    department_names = [dept.name for dept in departments]
-    department_points = [dept.total_points for dept in departments]
+    departments = Department.objects.all().order_by('-total_points')  # Order by points
+    department_names = json.dumps([dept.name for dept in departments])
+    department_points = json.dumps([dept.total_points for dept in departments])
     
     # Get categories with their event counts and points
     categories = Category.objects.all()
     category_data = []
     for category in categories:
-        event_count = Result.objects.filter(category=category).count()
-        total_points = Result.objects.filter(category=category).aggregate(
-            total=models.Sum(
-                models.Case(
-                    models.When(first_place__isnull=False, then=5),
-                    models.When(second_place__isnull=False, then=3),
-                    models.When(third_place__isnull=False, then=1),
-                    default=0,
-                    output_field=models.IntegerField(),
-                )
-            )
-        )['total'] or 0
+        # Get results for this category
+        results = Result.objects.filter(category=category)
+        event_count = results.count()
+        
+        # Calculate total points for this category
+        total_points = 0
+        for result in results:
+            # Add points for first place (5 points each)
+            total_points += result.first_place.count() * 5
+            # Add points for second place (3 points each)
+            total_points += result.second_place.count() * 3
+            # Add points for third place (1 point each)
+            total_points += result.third_place.count() * 1
         
         category_data.append({
             'name': category.name,

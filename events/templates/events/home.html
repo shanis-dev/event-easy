@@ -150,7 +150,7 @@
                 <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors">
                     How do I register?
                 </button>
-                <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors">
+                <button class="quick-question bg-purple-50 text-purple-600 px-4 py-2 rounded-full text-sm hover:bg-purple-100 transition-colors" onclick="window.location.href='{% url 'points' %}'">
                     Show points table
                 </button>
             </div>
@@ -241,13 +241,16 @@
 
     // Points Distribution Chart
     const ctx = document.getElementById('pointsDistribution').getContext('2d');
+    const departmentNames = {{ department_names|safe }};
+    const departmentPoints = {{ department_points|safe }};
+    
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: {{ department_names|safe }},
+            labels: departmentNames,
             datasets: [{
                 label: 'Points',
-                data: {{ department_points|safe }},
+                data: departmentPoints,
                 backgroundColor: [
                     'rgba(147, 51, 234, 0.7)',
                     'rgba(79, 70, 229, 0.7)',
@@ -309,9 +312,9 @@
     new Chart(pieCtx, {
         type: 'doughnut',
         data: {
-            labels: {{ department_names|safe }},
+            labels: departmentNames,
             datasets: [{
-                data: {{ department_points|safe }},
+                data: departmentPoints,
                 backgroundColor: [
                     'rgba(147, 51, 234, 0.7)',
                     'rgba(79, 70, 229, 0.7)',
