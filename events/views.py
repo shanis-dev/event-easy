@@ -1,10 +1,63 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from .models import Posters, Result, Category, Department, Schedule, Student, Image
+from django.db import models
+from django.http import JsonResponse
+import openai
+from django.conf import settings
+import json
 
 def home(request):
     images = Image.objects.all()
-    return render(request, 'events/home.html', {'images': images})
+    
+    # Get departments data for graphs
+    departments = Department.objects.all()
+    department_names = [dept.name for dept in departments]
+    department_points = [dept.total_points for dept in departments]
+    
+    # Get categories with their event counts and points
+    categories = Category.objects.all()
+    category_data = []
+    for category in categories:
+        event_count = Result.objects.filter(category=category).count()
+        total_points = Result.objects.filter(category=category).aggregate(
+            total=models.Sum(
+                models.Case(
+                    models.When(first_place__isnull=False, then=5),
+                    models.When(second_place__isnull=False, then=3),
+                    models.When(third_place__isnull=False, then=1),
+                    default=0,
+                    output_field=models.IntegerField(),
+                )
+            )
+        )['total'] or 0
+        
+        category_data.append({
+            'name': category.name,
+            'event_count': event_count,
+            'max_points': total_points,
+            'progress': int((event_count / (event_count + 1)) * 100) if event_count > 0 else 0
+        })
+    
+    # Get counts for statistics
+    event_count = Result.objects.count()
+    department_count = Department.objects.count()
+    participant_count = Student.objects.count()
+    
+    context = {
+        'images': images,
+        'categories': category_data,
+        'department_names': department_names,
+        'department_points': department_points,
+        'stats': {
+            'events': event_count,
+            'departments': department_count,
+            'participants': participant_count,
+            'days': 7  # You might want to calculate this based on your schedule
+        }
+    }
+    
+    return render(request, 'events/home.html', context)
 
 def schedule(request):
     posters = Schedule.objects.all()
@@ -63,3 +116,54 @@ def points_table(request):
         'departments': departments,
         'top_students_by_category': top_students_by_category
     })
+
+def chat_with_gpt(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message', '')
+            
+            # Get relevant context from the database
+            departments = Department.objects.all()
+            categories = Category.objects.all()
+            results = Result.objects.all()
+            
+            # Create context string
+            context = "Current departments: " + ", ".join([f"{d.name} ({d.total_points} points)" for d in departments])
+            context += "\nEvent categories: " + ", ".join([c.name for c in categories])
+            context += "\nRecent results: " + ", ".join([f"{r.program}" for r in results[:5]])
+            
+            # Create system message with context
+            system_message = f"""You are a helpful assistant for the College Arts Festival. 
+            Here's the current context:
+            {context}
+            
+            Please provide accurate information based on this context."""
+            
+            # Call OpenAI API
+            openai.api_key = settings.OPENAI_API_KEY
+            response = openai.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": user_message}
+                ],
+                max_tokens=150,
+                temperature=0.7
+            )
+            
+            # Extract the response
+            bot_response = response.choices[0].message.content
+            
+            return JsonResponse({
+                'response': bot_response,
+                'status': 'success'
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': str(e),
+                'status': 'error'
+            }, status=500)
+    
+    return JsonResponse({'error': 'Only POST method is allowed', 'status': 'error'}, status=405)

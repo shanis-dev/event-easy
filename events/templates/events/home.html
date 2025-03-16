@@ -31,19 +31,19 @@
     <section class="container mx-auto px-4 mb-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-all hover:shadow-xl">
-                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="50">0</div>
+                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="{{ stats.events }}">0</div>
                 <div class="text-gray-600">Events</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-all hover:shadow-xl">
-                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="10">0</div>
+                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="{{ stats.departments }}">0</div>
                 <div class="text-gray-600">Departments</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-all hover:shadow-xl">
-                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="1000">0</div>
+                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="{{ stats.participants }}">0</div>
                 <div class="text-gray-600">Participants</div>
             </div>
             <div class="bg-white p-6 rounded-xl shadow-lg text-center transform hover:scale-105 transition-all hover:shadow-xl">
-                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="7">0</div>
+                <div class="text-3xl font-bold text-purple-600 mb-2 counter" data-target="{{ stats.days }}">0</div>
                 <div class="text-gray-600">Days</div>
             </div>
         </div>
@@ -55,7 +55,7 @@
             <!-- Points Distribution -->
             <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-[1.02] transition-all">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">Points Distribution</h2>
-                <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="bg-gray-50 p-4 rounded-lg" style="height: 300px;">
                     <canvas id="pointsDistribution"></canvas>
                 </div>
             </div>
@@ -63,7 +63,7 @@
             <!-- Participation Stats -->
             <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-[1.02] transition-all">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">Participation by Department</h2>
-                <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="bg-gray-50 p-4 rounded-lg" style="height: 300px;">
                     <canvas id="participationPie"></canvas>
                 </div>
             </div>
@@ -90,25 +90,21 @@
     </section>
 
     <!-- Gallery Section -->
+    {% if images %}
     <section class="container mx-auto px-4 mb-12">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Gallery</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {% for image in images %}
-            <div class="relative rounded-lg overflow-hidden aspect-square group">
-                <img 
-                    src="{{ image.image.url }}"
-                    alt="{{ image.title }}"
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                >
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-semibold">{{ image.title }}</h3>
-                    </div>
+            <div class="relative group overflow-hidden rounded-lg shadow-lg transform hover:scale-105 transition-all">
+                <img src="{{ image.image.url }}" alt="{{ image.title }}" class="w-full h-48 object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <p class="text-white text-center font-semibold">{{ image.title }}</p>
                 </div>
             </div>
             {% endfor %}
         </div>
     </section>
+    {% endif %}
 
     <!-- Enhanced Chatbot Section -->
     <section id="chat" class="container mx-auto px-4 mb-12">
@@ -160,6 +156,41 @@
             </div>
         </div>
     </section>
+
+    <!-- Chat Widget -->
+    <div id="chat-widget" class="fixed bottom-4 right-4 z-50">
+        <!-- Chat Button -->
+        <button id="chat-toggle" class="bg-purple-600 text-white rounded-full p-4 shadow-lg hover:bg-purple-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden fixed bottom-20 right-4 w-96 bg-white rounded-lg shadow-xl">
+            <div class="p-4 border-b border-gray-200 bg-purple-600 rounded-t-lg">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-white">Chat Assistant</h3>
+                    <button id="chat-close" class="text-white hover:text-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="chat-messages" class="h-96 overflow-y-auto p-4 space-y-4"></div>
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex space-x-2">
+                    <input type="text" id="chat-input" class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Type your message...">
+                    <button id="send-message" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Chart.js for graphs -->
@@ -213,48 +244,57 @@
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Dance', 'Music', 'Literary', 'Theatre', 'Fine Arts'],
+            labels: {{ department_names|safe }},
             datasets: [{
-                label: 'Maximum Points',
-                data: [50, 45, 40, 35, 30],
+                label: 'Points',
+                data: {{ department_points|safe }},
                 backgroundColor: [
                     'rgba(147, 51, 234, 0.7)',
                     'rgba(79, 70, 229, 0.7)',
                     'rgba(59, 130, 246, 0.7)',
                     'rgba(16, 185, 129, 0.7)',
-                    'rgba(245, 158, 11, 0.7)'
+                    'rgba(245, 158, 11, 0.7)',
+                    'rgba(236, 72, 153, 0.7)',
+                    'rgba(248, 113, 113, 0.7)',
+                    'rgba(129, 140, 248, 0.7)',
+                    'rgba(52, 211, 153, 0.7)',
+                    'rgba(251, 191, 36, 0.7)'
                 ],
                 borderColor: [
                     'rgba(147, 51, 234, 1)',
                     'rgba(79, 70, 229, 1)',
                     'rgba(59, 130, 246, 1)',
                     'rgba(16, 185, 129, 1)',
-                    'rgba(245, 158, 11, 1)'
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(236, 72, 153, 1)',
+                    'rgba(248, 113, 113, 1)',
+                    'rgba(129, 140, 248, 1)',
+                    'rgba(52, 211, 153, 1)',
+                    'rgba(251, 191, 36, 1)'
                 ],
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
                 title: {
                     display: true,
-                    text: 'Points Distribution by Category',
-                    color: '#1F2937'
+                    text: 'Points Distribution by Department',
+                    color: '#1F2937',
+                    font: { size: 14 }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0,0,0,0.05)'
-                    }
+                    grid: { color: 'rgba(0,0,0,0.05)' }
                 },
                 x: {
-                    grid: {
-                        display: false
-                    }
+                    grid: { display: false },
+                    ticks: { font: { size: 11 } }
                 }
             },
             animation: {
@@ -269,39 +309,52 @@
     new Chart(pieCtx, {
         type: 'doughnut',
         data: {
-            labels: ['CS', 'EC', 'EEE', 'ME', 'CE'],
+            labels: {{ department_names|safe }},
             datasets: [{
-                data: [300, 250, 200, 180, 170],
+                data: {{ department_points|safe }},
                 backgroundColor: [
                     'rgba(147, 51, 234, 0.7)',
                     'rgba(79, 70, 229, 0.7)',
                     'rgba(59, 130, 246, 0.7)',
                     'rgba(16, 185, 129, 0.7)',
-                    'rgba(245, 158, 11, 0.7)'
+                    'rgba(245, 158, 11, 0.7)',
+                    'rgba(236, 72, 153, 0.7)',
+                    'rgba(248, 113, 113, 0.7)',
+                    'rgba(129, 140, 248, 0.7)',
+                    'rgba(52, 211, 153, 0.7)',
+                    'rgba(251, 191, 36, 0.7)'
                 ],
                 borderColor: [
                     'rgba(147, 51, 234, 1)',
                     'rgba(79, 70, 229, 1)',
                     'rgba(59, 130, 246, 1)',
                     'rgba(16, 185, 129, 1)',
-                    'rgba(245, 158, 11, 1)'
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(236, 72, 153, 1)',
+                    'rgba(248, 113, 113, 1)',
+                    'rgba(129, 140, 248, 1)',
+                    'rgba(52, 211, 153, 1)',
+                    'rgba(251, 191, 36, 1)'
                 ],
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom',
+                    position: 'right',
                     labels: {
-                        padding: 20
+                        padding: 15,
+                        font: { size: 11 }
                     }
                 },
                 title: {
                     display: true,
-                    text: 'Participation Distribution',
-                    color: '#1F2937'
+                    text: 'Points Distribution',
+                    color: '#1F2937',
+                    font: { size: 14 }
                 }
             },
             animation: {
@@ -438,5 +491,98 @@
         }
     `;
     document.head.appendChild(style);
+
+    // Chat functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const chatClose = document.getElementById('chat-close');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendMessage = document.getElementById('send-message');
+
+        // Toggle chat window
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.toggle('hidden');
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatWindow.classList.add('hidden');
+        });
+
+        // Send message function
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessageToChat('user', message);
+            chatInput.value = '';
+
+            // Send to backend
+            fetch('/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    addMessageToChat('bot', data.response);
+                } else {
+                    addMessageToChat('bot', 'Sorry, I encountered an error. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessageToChat('bot', 'Sorry, I encountered an error. Please try again.');
+            });
+        }
+
+        // Add message to chat window
+        function addMessageToChat(sender, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const messageBubble = document.createElement('div');
+            messageBubble.className = `max-w-[75%] rounded-lg px-4 py-2 ${
+                sender === 'user' 
+                    ? 'bg-purple-600 text-white' 
+                    : 'bg-gray-100 text-gray-800'
+            }`;
+            messageBubble.textContent = message;
+            
+            messageDiv.appendChild(messageBubble);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Send message on button click or enter key
+        sendMessage.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
 </script>
 {% endblock %}
